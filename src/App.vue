@@ -1,45 +1,43 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { login, register } from './api'
+import { ref } from 'vue';
+import { login, register } from './services/authService';
+import { useRouter } from 'vue-router';
 
-const email = ref('')
-const password = ref('')
-const message = ref('')
+
+const email = ref('');
+const password = ref('');
+const message = ref('');
+const router = useRouter();
 
 async function Login() {
   try {
-    const ok = await login(email.value, password.value)
-    message.value = ok ? 'Login funciona' : ' Login falló'
+    const token = await login(email.value, password.value);
+    if (token) {
+      message.value = 'Login exitoso. Token guardado.';
+      localStorage.setItem('user_email', email.value);
+      router.push('/dashboard');
+    } else {
+      message.value = 'Login falló';
+    }
   } catch {
-    message.value = 'Error en login'
+    message.value = 'Error en login';
   }
 }
 
 async function Register() {
   try {
-    const ok = await register(email.value, password.value)
-    message.value = ok ? 'Register funciona' : ' Register falló'
+    const ok = await register(email.value, password.value);
+    message.value = ok ? 'Registro exitoso.' : 'Registro falló';
   } catch {
-    message.value = 'Error en register'
+    message.value = 'Error en register';
   }
 }
 </script>
 
 <template>
-  <div style="padding:40px; max-width:400px; margin:auto; font-family:sans-serif">
-    <h2>Vue Login</h2>
-
-    <input v-model="email" placeholder="email" />
-    <br /><br />
-    <input v-model="password" type="password" placeholder="password" />
-    <br /><br />
-
-    <button @click="Login">Login</button>
-    <button @click="Register" style="margin-left:10px">Register</button>
-
-    <p>{{ message }}</p>
-  </div>
+  <router-view />
 </template>
+
 <style scoped>
 div {
   background: #f8fafc;
