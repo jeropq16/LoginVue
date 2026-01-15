@@ -35,7 +35,7 @@ async function Register() {
 </script>
 
 <template>
-  <router-view />
+<router-view />
 </template>
 
 <style scoped>

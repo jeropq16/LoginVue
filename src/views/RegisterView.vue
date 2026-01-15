@@ -1,3 +1,36 @@
+<script setup lang="ts">
+import { ref } from 'vue';
+import { register } from '../services/registerService';
+import { useRouter } from 'vue-router';
+
+const email = ref('');
+const password = ref('');
+const message = ref('');
+const router = useRouter();
+
+async function Register() {
+  const ok = await register(email.value, password.value);
+  message.value = ok ? 'Registro exitoso.' : 'Registro falló.';
+}
+
+function goBack() {
+  router.push('/');
+}
+</script>
+
+<template>
+  <div class="form-container">
+    <h2>Register</h2>
+    <input v-model="email" placeholder="email" />
+    <br /><br />
+    <input v-model="password" type="password" placeholder="password" />
+    <br /><br />
+    <button @click="Register">Register</button>
+    <button @click="goBack" style="margin-left:10px; background:#64748b;">Volver atrás</button>
+    <p>{{message}}</p>
+  </div>
+</template>
+
 <style scoped>
 .form-container {
   background: #f8fafc;
@@ -47,27 +80,3 @@ p {
   margin-top: 24px;
 }
 </style>
-<template>
-  <div style="padding:40px; max-width:400px; margin:auto; font-family:sans-serif">
-    <h2>Register</h2>
-    <input v-model="email" placeholder="email" />
-    <br /><br />
-    <input v-model="password" type="password" placeholder="password" />
-    <br /><br />
-    <button @click="Register">Register</button>
-    <p>{{message}}</p>
-  </div>
-</template>
-<script setup lang="ts">
-import { ref } from 'vue';
-import { register } from '../services/registerService';
-
-const email = ref('');
-const password = ref('');
-const message = ref('');
-
-async function Register() {
-  const ok = await register(email.value, password.value);
-  message.value = ok ? 'Registro exitoso.' : 'Registro falló.';
-}
-</script>
