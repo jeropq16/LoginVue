@@ -9,11 +9,16 @@ const message = ref('');
 const router = useRouter();
 
 async function Login() {
-  const token = await login(email.value, password.value);
-  if (token) {
+  const result = await login(email.value, password.value);
+  if (result && result.token) {
     message.value = 'Login exitoso.';
     localStorage.setItem('user_email', email.value);
-    router.push('/dashboard');
+    localStorage.setItem('user_role', result.role);
+    if (result.role === 'Admin') {
+      router.push('/dashboard');
+    } else {
+      router.push('/user-welcome');
+    }
   } else {
     message.value = 'Login falló.';
   }

@@ -5,11 +5,13 @@ import { useRouter } from 'vue-router';
 
 const email = ref('');
 const password = ref('');
+
 const message = ref('');
 const router = useRouter();
+const role = ref(1); 
 
 async function Register() {
-  const ok = await register(email.value, password.value);
+  const ok = await register(email.value, password.value, role.value);
   message.value = ok ? 'Registro exitoso.' : 'Registro falló.';
 }
 
@@ -25,6 +27,10 @@ function goBack() {
     <br /><br />
     <input v-model="password" type="password" placeholder="password" />
     <br /><br />
+    <select v-model="role" style="width:100%;margin-bottom:12px;padding:10px 14px;border-radius:8px;border:1px solid #d1d5db;font-size:16px;">
+      <option :value="0">Admin</option>
+      <option :value="1">User</option>
+    </select>
     <button @click="Register">Register</button>
     <button @click="goBack" style="margin-left:10px; background:#64748b;">Volver atrás</button>
     <p>{{message}}</p>

@@ -10,14 +10,14 @@ const api = axios.create({
 
 const TOKEN_NAME = 'auth_token';
 
-export async function login(email: string, password: string): Promise<string | null> {
+export async function login(email: string, password: string): Promise<{ token: string, role: string } | null> {
   try {
-    const res = await api.post<AuthToken>('/api/auth/login', null, {
+    const res = await api.post('/api/auth/login', null, {
       params: { email, password }
     });
-    if (res.status === 200 && res.data.token) {
+      if (res.status === 200 && res.data.token) {
       localStorage.setItem(TOKEN_NAME, res.data.token);
-      return res.data.token;
+      return { token: res.data.token, role: res.data.role };
     }
     return null;
   } catch (error: any) {
@@ -51,10 +51,12 @@ export function logout() {
   localStorage.removeItem(TOKEN_NAME);
 }
 
+
 api.interceptors.request.use(config => {
   const token = getToken();
   if (token) {
-    (config.headers as any)['Authorization'] = `Bearer ${token}`;
+    config.headers = Object.assign({}, config.headers);
+    config.headers['Authorization'] = `Bearer ${token}`;
   }
   return config;
 });

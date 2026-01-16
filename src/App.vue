@@ -32,6 +32,7 @@ async function Register() {
     message.value = 'Error en register';
   }
 }
+
 </script>
 
 <template>
