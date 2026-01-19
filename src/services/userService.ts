@@ -37,3 +37,29 @@ export async function deleteUser(id: number) {
   const res = await api.delete(`/api/users/${id}`);
   return res.data;
 }
+
+export async function updateMyProfile(email: string, password: string | null, photo: File | null) {
+  const formData = new FormData();
+  if (email) formData.append('Email', email);
+  if (password) formData.append('Password', password);
+  else formData.append('Password', ''); 
+
+  if (photo) {
+    formData.append('ProfilePhoto', photo);
+  }
+
+  const res = await api.put('/api/users/me', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  });
+  return res.data;
+}
+
+export async function updateUserPhoto(id: number, photo: File) {
+  const formData = new FormData();
+  formData.append('ProfilePhoto', photo);
+
+  const res = await api.put(`/api/users/${id}/photo`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  });
+  return res.data;
+}

@@ -47,6 +47,7 @@ function goToRegister() {
 <template>
   <div class="login-page">
     <div class="header-section">
+      <img src="../assets/img/Logo.png" alt="Logo" class="logo-img" />
       <h1 class="main-title">Galería de Imágenes</h1>
       <p class="subtitle">Inicia sesión para continuar</p>
     </div>
@@ -76,7 +77,7 @@ function goToRegister() {
       </button>
 
       <div class="register-link">
-        <p>¿No tienes cuenta?</p>
+        <p>No tienes cuenta?</p>
         <button class="link-btn" @click="goToRegister">Regístrate aquí</button>
       </div>
 

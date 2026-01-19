@@ -3,9 +3,13 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import GalleryComponent from '../components/GalleryComponent.vue';
 import UserManagementModal from '../components/UserManagementModal.vue';
+import UserProfile from '../components/UserProfile.vue';
 
 const router = useRouter();
 const showUserModal = ref(false);
+
+const userEmail = localStorage.getItem('user_email') || '';
+const userRole = localStorage.getItem('user_role') || '';
 
 function logout() {
   localStorage.removeItem('user_email');
@@ -19,14 +23,14 @@ function logout() {
   <div class="dashboard-page">
     <nav class="navbar">
       <div class="nav-brand">
-        <h1>Dashboard</h1>
+        <UserProfile :email="userEmail" :role="userRole" />
       </div>
       <div class="nav-actions">
         <button @click="showUserModal = true" class="nav-btn secondary">
-          👥 Usuarios
+          Usuarios
         </button>
         <button @click="logout" class="nav-btn primary">
-          ↪ Cerrar Sesión
+          Cerrar Sesión
         </button>
       </div>
     </nav>

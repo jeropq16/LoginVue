@@ -70,11 +70,14 @@ async function handleDelete(id: number) {
   }
 }
 
+const editPhoto = ref<File | null>(null);
+
 function startEdit(user: any) {
   editId.value = user.id;
   editEmail.value = user.email;
   editPassword.value = '';
   editRole.value = user.role === 'Admin' ? 0 : 1;
+  editPhoto.value = null;
 }
 
 function cancelEdit() {
@@ -82,11 +85,25 @@ function cancelEdit() {
   editEmail.value = '';
   editPassword.value = '';
   editRole.value = 1;
+  editPhoto.value = null;
+}
+
+function handleAdminPhotoChange(event: Event) {
+  const target = event.target as HTMLInputElement;
+  if (target.files && target.files.length > 0) {
+    editPhoto.value = target.files[0];
+  }
 }
 
 async function handleUpdate() {
   if (editId.value !== null) {
     await updateUser(editId.value, { email: editEmail.value, password: editPassword.value, role: editRole.value });
+
+    if (editPhoto.value) {
+      const { updateUserPhoto } = await import('../services/userService');
+      await updateUserPhoto(editId.value, editPhoto.value);
+    }
+
     await refreshUsers();
     cancelEdit();
   }
@@ -146,6 +163,13 @@ function close() {
               <option :value="0">Admin</option>
               <option :value="1">User</option>
             </select>
+
+            <div style="margin-top:12px;">
+              <label style="font-size:0.9rem;font-weight:600;margin-bottom:4px;display:block;">Foto de Perfil
+                (Opcional)</label>
+              <input type="file" @change="handleAdminPhotoChange" class="input-field" accept="image/*" />
+            </div>
+
             <div class="edit-actions">
               <button @click="handleUpdate" class="save-btn">Guardar</button>
               <button @click="cancelEdit" class="cancel-btn">Cancelar</button>

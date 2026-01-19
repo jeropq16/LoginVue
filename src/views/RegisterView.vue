@@ -42,6 +42,7 @@ function goBack() {
 <template>
   <div class="login-page">
     <div class="header-section">
+      <img src="../assets/img/Logo.png" alt="Logo" class="logo-img" />
       <h1 class="main-title">Crear Cuenta</h1>
     </div>
 

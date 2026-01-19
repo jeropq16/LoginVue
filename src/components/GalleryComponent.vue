@@ -89,7 +89,7 @@ function formatDate(dateStr: string) {
       </div>
     </div>
 
-    <h3 class="gallery-heading">Todas las imágenes ({{ images.length }})</h3>
+    <h3 class="gallery-heading">Galería de imágenes ({{ images.length }})</h3>
 
     <div v-if="images.length === 0" class="empty-state">
       <p>No hay imágenes disponibles.</p>
