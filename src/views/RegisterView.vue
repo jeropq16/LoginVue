@@ -7,12 +7,31 @@ const email = ref('');
 const password = ref('');
 
 const message = ref('');
+const isLoading = ref(false);
+const showPassword = ref(false);
 const router = useRouter();
-const role = ref(1); 
+const role = ref(1);
 
 async function Register() {
+  if (!email.value || !password.value) {
+    message.value = 'Por favor completa todos los campos';
+    return;
+  }
+
+  isLoading.value = true;
+  message.value = '';
+
   const ok = await register(email.value, password.value, role.value);
-  message.value = ok ? 'Registro exitoso.' : 'Registro falló.';
+  isLoading.value = false;
+
+  if (ok) {
+    message.value = 'Registro exitoso. Redirigiendo...';
+    setTimeout(() => {
+      router.push('/');
+    }, 1500);
+  } else {
+    message.value = 'Registro falló.';
+  }
 }
 
 function goBack() {
@@ -21,68 +40,49 @@ function goBack() {
 </script>
 
 <template>
-  <div class="form-container">
-    <h2>Register</h2>
-    <input v-model="email" placeholder="email" />
-    <br /><br />
-    <input v-model="password" type="password" placeholder="password" />
-    <br /><br />
-    <select v-model="role" style="width:100%;margin-bottom:12px;padding:10px 14px;border-radius:8px;border:1px solid #d1d5db;font-size:16px;">
-      <option :value="0">Admin</option>
-      <option :value="1">User</option>
-    </select>
-    <button @click="Register">Register</button>
-    <button @click="goBack" style="margin-left:10px; background:#64748b;">Volver atrás</button>
-    <p>{{message}}</p>
+  <div class="login-page">
+    <div class="header-section">
+      <h1 class="main-title">Crear Cuenta</h1>
+    </div>
+
+    <div class="card-container">
+      <div class="input-group">
+        <label>Usuario</label>
+        <div class="input-wrapper">
+          <input v-model="email" placeholder="Ingresa tu email" />
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Contraseña</label>
+        <div class="input-wrapper">
+          <input v-model="password" :type="showPassword ? 'text' : 'password'" placeholder="Crea una contraseña" />
+          <button class="toggle-password" @click="showPassword = !showPassword" tabindex="-1">
+            {{ showPassword ? 'Ocultar' : 'Ver' }}
+          </button>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Rol</label>
+        <div class="input-wrapper">
+          <select v-model="role">
+            <option :value="0">Admin</option>
+            <option :value="1">User</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="login-btn" @click="Register" :disabled="isLoading">
+        {{ isLoading ? 'Registrando...' : 'Registrarme' }}
+        <span v-if="!isLoading" class="arrow">→</span>
+      </button>
+
+      <div class="register-link">
+        <button class="link-btn" @click="goBack">← Volver al Login</button>
+      </div>
+
+      <p v-if="message" class="error-msg">{{ message }}</p>
+    </div>
   </div>
 </template>
-
-<style scoped>
-.form-container {
-  background: #f8fafc;
-  border-radius: 16px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-  padding: 40px;
-  max-width: 400px;
-  margin: 40px auto;
-  font-family: 'Segoe UI', Arial, sans-serif;
-}
-h2 {
-  text-align: center;
-  color: #2563eb;
-  margin-bottom: 32px;
-}
-input {
-  width: 100%;
-  padding: 10px 14px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  font-size: 16px;
-  margin-bottom: 12px;
-  box-sizing: border-box;
-  transition: border-color 0.2s;
-}
-input:focus {
-  border-color: #2563eb;
-  outline: none;
-}
-button {
-  background: #2563eb;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-button:hover {
-  background: #1d4ed8;
-}
-p {
-  text-align: center;
-  color: #dc2626;
-  font-weight: 500;
-  margin-top: 24px;
-}
-</style>

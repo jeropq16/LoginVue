@@ -1,4 +1,3 @@
-
 import axios from 'axios';
 import { getToken } from './authService';
 
@@ -24,8 +23,7 @@ export async function getUser(id: number) {
   return res.data;
 }
 
-export async function updateUser(id: number, data: { email: string; password: string; role: number }) {
-  // El backend espera Email, Password, Role
+export async function updateUser(id: number, data: any) {
   const payload = {
     Email: data.email,
     Password: data.password,

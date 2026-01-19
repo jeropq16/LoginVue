@@ -1,0 +1,71 @@
+.dashboard-page {
+    min-height: 100vh;
+    background-color: #f8fafc;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.navbar {
+    background: white;
+    padding: 16px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+
+.nav-brand h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #1e293b;
+    font-weight: 700;
+}
+
+.nav-actions {
+    display: flex;
+    gap: 16px;
+}
+
+.nav-btn {
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.nav-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.nav-btn.secondary {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.nav-btn.secondary:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+
+.nav-btn.primary {
+    background: #0f172a;
+    color: white;
+}
+
+.nav-btn.primary:hover {
+    background: #334155;
+}
+
+.main-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}

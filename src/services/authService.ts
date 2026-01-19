@@ -1,30 +1,28 @@
 /// <reference types="vite/client" />
 
 import axios from 'axios';
-import type { AuthToken } from '../models/AuthToken';
 
-const api = axios.create({
+export const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || ''
 });
 
-
 const TOKEN_NAME = 'auth_token';
 
-export async function login(email: string, password: string): Promise<{ token: string, role: string } | null> {
+export async function login(email: string, password: string): Promise<any> {
   try {
     const res = await api.post('/api/auth/login', null, {
       params: { email, password }
     });
-      if (res.status === 200 && res.data.token) {
+    if (res.status === 200 && res.data.token) {
       localStorage.setItem(TOKEN_NAME, res.data.token);
       return { token: res.data.token, role: res.data.role };
     }
     return null;
   } catch (error: any) {
     if (error.response && error.response.data) {
-      console.error('Login error:', error.response.data);
+      console.error(error.response.data);
     } else {
-      console.error('Login error:', error);
+      console.error(error);
     }
     return null;
   }
@@ -33,15 +31,16 @@ export async function login(email: string, password: string): Promise<{ token: s
 export function getToken(): string | null {
   return localStorage.getItem(TOKEN_NAME);
 }
+
 export async function register(email: string, password: string): Promise<boolean> {
   try {
     const res = await api.post('/api/auth/register', { email, password });
     return res.status === 200;
   } catch (error: any) {
     if (error.response && error.response.data) {
-      console.error('Register error:', error.response.data);
+      console.error(error.response.data);
     } else {
-      console.error('Register error:', error);
+      console.error(error);
     }
     return false;
   }
@@ -50,7 +49,6 @@ export async function register(email: string, password: string): Promise<boolean
 export function logout() {
   localStorage.removeItem(TOKEN_NAME);
 }
-
 
 api.interceptors.request.use(config => {
   const token = getToken();

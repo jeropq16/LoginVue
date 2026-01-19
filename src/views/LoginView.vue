@@ -5,89 +5,82 @@ import { useRouter } from 'vue-router';
 
 const email = ref('');
 const password = ref('');
+const showPassword = ref(false);
 const message = ref('');
+const isLoading = ref(false);
 const router = useRouter();
 
 async function Login() {
-  const result = await login(email.value, password.value);
-  if (result && result.token) {
-    message.value = 'Login exitoso.';
-    localStorage.setItem('user_email', email.value);
-    localStorage.setItem('user_role', result.role);
-    if (result.role === 'Admin') {
-      router.push('/dashboard');
+  if (!email.value || !password.value) {
+    message.value = 'Por favor ingresa usuario y contraseña';
+    return;
+  }
+
+  isLoading.value = true;
+  message.value = '';
+
+  try {
+    const result = await login(email.value, password.value);
+    if (result && result.token) {
+      localStorage.setItem('user_email', email.value);
+      localStorage.setItem('user_role', result.role);
+      if (result.role === 'Admin') {
+        router.push('/dashboard');
+      } else {
+        router.push('/user-welcome');
+      }
     } else {
-      router.push('/user-welcome');
+      message.value = 'Credenciales inválidas. Intenta de nuevo.';
     }
-  } else {
-    message.value = 'Login falló.';
+  } catch (e) {
+    message.value = 'Ocurrió un error al iniciar sesión.';
+  } finally {
+    isLoading.value = false;
   }
 }
 
-function Register() {
+function goToRegister() {
   router.push('/register');
 }
 </script>
 
 <template>
-  <div class="form-container">
-    <h2>Login</h2>
-    <input v-model="email" placeholder="email" />
-    <br /><br />
-    <input v-model="password" type="password" placeholder="password" />
-    <br /><br />
-    <button @click="Login">Login</button>
-    <button @click="Register" style="margin-left:10px; background:#64748b;">Ir a Register</button>
-    <p>{{message}}</p>
+  <div class="login-page">
+    <div class="header-section">
+      <h1 class="main-title">Galería de Imágenes</h1>
+      <p class="subtitle">Inicia sesión para continuar</p>
+    </div>
+
+    <div class="card-container">
+      <div class="input-group">
+        <label>Usuario</label>
+        <div class="input-wrapper">
+          <input v-model="email" type="text" placeholder="Ingresa tu usuario" @keyup.enter="Login" />
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Contraseña</label>
+        <div class="input-wrapper">
+          <input v-model="password" :type="showPassword ? 'text' : 'password'" placeholder="Ingresa tu contraseña"
+            @keyup.enter="Login" />
+          <button class="toggle-password" @click="showPassword = !showPassword" tabindex="-1">
+            {{ showPassword ? 'Ocultar' : 'Mostrar' }}
+          </button>
+        </div>
+      </div>
+
+      <button class="login-btn" @click="Login" :disabled="isLoading">
+        {{ isLoading ? 'Cargando...' : 'Iniciar Sesión' }}
+        <span v-if="!isLoading" class="arrow">→</span>
+      </button>
+
+      <div class="register-link">
+        <p>¿No tienes cuenta?</p>
+        <button class="link-btn" @click="goToRegister">Regístrate aquí</button>
+      </div>
+
+      <p v-if="message" class="error-msg">{{ message }}</p>
+    </div>
   </div>
 </template>
-
-  <style scoped>
-  .form-container {
-    background: #f8fafc;
-    border-radius: 16px;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-    padding: 40px;
-    max-width: 400px;
-    margin: 40px auto;
-    font-family: 'Segoe UI', Arial, sans-serif;
-  }
-  h2 {
-    text-align: center;
-    color: #2563eb;
-    margin-bottom: 32px;
-  }
-  input {
-    width: 100%;
-    padding: 10px 14px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    font-size: 16px;
-    margin-bottom: 12px;
-    box-sizing: border-box;
-    transition: border-color 0.2s;
-  }
-  input:focus {
-    border-color: #2563eb;
-    outline: none;
-  }
-  button {
-    background: #2563eb;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  button:hover {
-    background: #1d4ed8;
-  }
-  p {
-    text-align: center;
-    color: #dc2626;
-    font-weight: 500;
-    margin-top: 24px;
-  }
-  </style>
